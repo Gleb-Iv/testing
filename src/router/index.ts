@@ -12,6 +12,7 @@ const router = createRouter({
       name: 'tree-grid',
       component: () => import('@/views/TreeGrid.vue'),
     },
+    // не знал, нужно делать сразу с редактированием, поэтому сделал этот режим отдельно, на отдельной странице
     {
       path: '/tree-grid-edit',
       name: 'tree-grid-edit',

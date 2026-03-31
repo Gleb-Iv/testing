@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
 import TreeGridPageShell from '@/components/tree-grid/TreeGridPageShell.vue'
 import TreeGridTable from '@/components/tree-grid/TreeGridTable.vue'
 import {
@@ -9,20 +7,17 @@ import {
   getTreeGridRowId,
   treeGridDefaultColDef,
 } from '@/components/tree-grid/treeGridConfig'
-import { sampleTreeItems, type DemoTreeItem } from '@/data/treeItems'
-import { TreeStore, type TreeStoreId } from '@/strore/TreeStore'
+import type { TreeStoreId } from '@/strore/TreeStore'
+import { useTreeGridStore } from '@/strore/useTreeGridStore'
 
-type TableRow = DemoTreeItem
-
-const treeStore = new TreeStore<DemoTreeItem>(sampleTreeItems.map((item) => ({ ...item })))
-const rowData = ref<TableRow[]>([...treeStore.getAll()])
+const { getChildren, rowData } = useTreeGridStore()
 
 function isGroupItem(itemId: TreeStoreId | null | undefined): boolean {
   if (itemId === null || itemId === undefined) {
     return false
   }
 
-  return treeStore.getChildren(itemId).length > 0
+  return getChildren(itemId).length > 0
 }
 
 const columnDefs = createTreeGridColumnDefs({

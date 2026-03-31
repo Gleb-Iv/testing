@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// не знал, нужно делать сразу с редактированием, поэтому сделал этот режим отдельно, на отдельной странице
 import { computed, nextTick, ref, shallowRef } from 'vue'
 import type {
   CellEditRequestEvent,
@@ -16,14 +17,14 @@ import {
   getTreeGridRowId,
   treeGridDefaultColDef,
 } from '@/components/tree-grid/treeGridConfig'
-import { sampleTreeItems, type DemoTreeItem } from '@/data/treeItems'
-import { TreeStore, type TreeStoreId } from '@/strore/TreeStore'
+import type { DemoTreeItem } from '@/data/treeItems'
+import type { TreeStoreId } from '@/strore/TreeStore'
+import { useTreeGridStore } from '@/strore/useTreeGridStore'
 
 type TableRow = DemoTreeItem
 
-const treeStore = new TreeStore<DemoTreeItem>(sampleTreeItems.map((item) => ({ ...item })))
+const { addItem, getChildren, getItem, removeItem, rowData, updateItem } = useTreeGridStore()
 const gridApi = shallowRef<GridApi<TableRow> | null>(null)
-const rowData = ref<TableRow[]>([...treeStore.getAll()])
 const selectedRowId = ref<TreeStoreId | null>(null)
 
 let nextGeneratedId = 1
@@ -33,7 +34,7 @@ const selectedItem = computed<TableRow | null>(() => {
     return null
   }
 
-  return treeStore.getItem(selectedRowId.value) ?? null
+  return rowData.value.find((item) => item.id === selectedRowId.value) ?? null
 })
 
 function isGroupItem(itemId: TreeStoreId | null | undefined): boolean {
@@ -41,7 +42,7 @@ function isGroupItem(itemId: TreeStoreId | null | undefined): boolean {
     return false
   }
 
-  return treeStore.getChildren(itemId).length > 0
+  return getChildren(itemId).length > 0
 }
 
 const rowSelection: RowSelectionOptions<TableRow> = {
@@ -70,7 +71,7 @@ function handleCellEditRequest(event: CellEditRequestEvent<TableRow>): void {
     return
   }
 
-  const currentItem = treeStore.getItem(event.data.id)
+  const currentItem = getItem(event.data.id)
 
   if (currentItem === undefined) {
     return
@@ -79,16 +80,16 @@ function handleCellEditRequest(event: CellEditRequestEvent<TableRow>): void {
   const nextLabel = typeof event.newValue === 'string' ? event.newValue.trim() : ''
 
   if (nextLabel.length === 0 || nextLabel === currentItem.label) {
-    syncRowData({ selectedId: currentItem.id })
+    syncGridState({ selectedId: currentItem.id })
     return
   }
 
-  treeStore.updateItem({
+  updateItem({
     ...currentItem,
     label: nextLabel,
   })
 
-  syncRowData({ selectedId: currentItem.id })
+  syncGridState({ selectedId: currentItem.id })
 }
 
 function addRootRow(): void {
@@ -108,11 +109,11 @@ function removeSelectedRow(): void {
     return
   }
 
-  const itemToRemove = treeStore.getItem(selectedRowId.value)
+  const itemToRemove = getItem(selectedRowId.value)
   const nextSelectedId = itemToRemove?.parent ?? null
 
-  treeStore.removeItem(selectedRowId.value)
-  syncRowData({ selectedId: nextSelectedId })
+  removeItem(selectedRowId.value)
+  syncGridState({ selectedId: nextSelectedId })
 }
 
 function addRow(parent: TreeStoreId | null): void {
@@ -122,14 +123,14 @@ function addRow(parent: TreeStoreId | null): void {
     label: 'Новая строка',
   }
 
-  treeStore.addItem(newItem)
-  syncRowData({ selectedId: newItem.id, startEditing: true })
+  addItem(newItem)
+  syncGridState({ selectedId: newItem.id, startEditing: true })
 }
 
 function createItemId(): TreeStoreId {
   let itemId = `generated-${nextGeneratedId}`
 
-  while (treeStore.getItem(itemId) !== undefined) {
+  while (getItem(itemId) !== undefined) {
     nextGeneratedId += 1
     itemId = `generated-${nextGeneratedId}`
   }
@@ -139,11 +140,9 @@ function createItemId(): TreeStoreId {
   return itemId
 }
 
-function syncRowData(
+function syncGridState(
   options: { selectedId?: TreeStoreId | null; startEditing?: boolean } = {},
 ): void {
-  rowData.value = [...treeStore.getAll()]
-
   void nextTick(() => {
     const api = gridApi.value
 
