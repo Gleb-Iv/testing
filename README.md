@@ -1,54 +1,111 @@
-# testing
+# Tree Grid Demo
 
-This template should help get you started developing with Vue 3 in Vite.
+Небольшое приложение на `Vue 3` и `AG Grid`, которое показывает древовидную таблицу в двух режимах:
 
-## Recommended IDE Setup
+- `Просмотр` для чтения структуры дерева.
+- `Редактирование` для изменения названий, добавления и удаления узлов.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Обе страницы работают с одним и тем же источником данных через общий singleton store, поэтому изменения в режиме редактирования сразу видны в режиме просмотра после перехода между страницами.
 
-## Recommended Browser Setup
+## Возможности
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- Древовидное отображение данных через `AG Grid Tree Data`.
+- Отдельные маршруты для режимов просмотра и редактирования.
+- Навигация между режимами прямо на странице.
+- Редактирование поля `Наименование` по двойному клику.
+- Добавление корневых и дочерних элементов.
+- Удаление выбранного узла вместе с поддеревом.
+- Общий store для синхронизации состояния между страницами.
+- Юнит-тесты на store, конфигурацию таблицы и общие компоненты.
 
-## Type Support for `.vue` Imports in TS
+## Стек
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- `Vue 3`
+- `TypeScript`
+- `Vue Router`
+- `AG Grid`
+- `Vitest`
+- `ESLint`, `Oxlint`, `Prettier`
+- `Vite`
 
-## Customize configuration
+## Запуск
 
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+Требуется `Node.js 20.19+` или `22.12+`.
 
 ```sh
 npm install
+npm run dev
 ```
 
-### Compile and Hot-Reload for Development
+После запуска приложение доступно по маршрутам:
+
+- `/tree-grid` — режим просмотра
+- `/tree-grid-edit` — режим редактирования
+
+Путь `/` перенаправляет на `/tree-grid`.
+
+## Скрипты
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+Запуск локального dev-сервера.
 
 ```sh
 npm run build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+Проверка типов и production-сборка.
+
+```sh
+npm run type-check
+```
+
+Проверка TypeScript и `.vue` файлов через `vue-tsc`.
 
 ```sh
 npm run test:unit
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+Запуск unit-тестов через `Vitest`.
+
+```sh
+npx vitest run
+```
+
+Одноразовый прогон тестов без watch-режима.
 
 ```sh
 npm run lint
 ```
+
+Запуск `oxlint` и `eslint`.
+
+```sh
+npm run format
+```
+
+Форматирование файлов в `src/`.
+
+## Структура проекта
+
+- `src/views/TreeGrid.vue` — страница режима просмотра.
+- `src/views/TreeGridEdit.vue` — страница режима редактирования.
+- `src/components/tree-grid/TreeGridTable.vue` — обёртка над `AgGridVue`.
+- `src/components/tree-grid/treeGridConfig.ts` — колонки и общая конфигурация таблицы.
+- `src/strore/TreeStore.ts` — низкоуровневое дерево с операциями чтения и изменения.
+- `src/strore/useTreeGridStore.ts` — singleton store, общий для страниц просмотра и редактирования.
+- `src/router/index.ts` — маршрутизация приложения.
+
+## Состояние данных
+
+Начальные данные берутся из `src/data/treeItems.ts`.
+
+Общий store в `src/strore/useTreeGridStore.ts`:
+
+- хранит единый экземпляр `TreeStore`
+- отдаёт реактивный `rowData`
+- синхронизирует состояние после `addItem`, `updateItem` и `removeItem`
+
+Это сделано специально, чтобы режимы просмотра и редактирования работали с одним и тем же деревом, а не с двумя независимыми копиями данных.
