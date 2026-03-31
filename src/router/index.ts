@@ -12,6 +12,11 @@ const router = createRouter({
       name: 'tree-grid',
       component: () => import('@/views/TreeGrid.vue'),
     },
+    {
+      path: '/tree-grid-edit',
+      name: 'tree-grid-edit',
+      component: () => import('@/views/TreeGridEdit.vue'),
+    },
   ],
 })
 

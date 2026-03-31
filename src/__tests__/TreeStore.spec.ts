@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import { sampleTreeItems, type DemoTreeItem } from '@/data/treeItems'
-import { TreeStore } from '@/tree/TreeStore'
+import { TreeStore } from '@/strore/TreeStore'
 
 describe('TreeStore', () => {
   let store: TreeStore<DemoTreeItem>

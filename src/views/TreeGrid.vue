@@ -7,7 +7,7 @@ import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 
 import { sampleTreeItems, type DemoTreeItem } from '@/data/treeItems'
-import { TreeStore } from '@/tree/TreeStore'
+import { TreeStore } from '@/strore/TreeStore'
 
 type TableRow = DemoTreeItem
 

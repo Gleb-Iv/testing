@@ -1,4 +1,4 @@
-import type { TreeStoreItem } from '@/tree/TreeStore'
+import type { TreeStoreItem } from '@/strore/TreeStore'
 
 export interface DemoTreeItem extends TreeStoreItem {
   label: string

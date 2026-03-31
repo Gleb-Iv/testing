@@ -2,12 +2,20 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
-import { CellStyleModule, ClientSideRowModelModule, ModuleRegistry } from 'ag-grid-community'
+import {
+  CellStyleModule,
+  ClientSideRowModelModule,
+  ModuleRegistry,
+  RowSelectionModule,
+  TextEditorModule,
+} from 'ag-grid-community'
 import { LicenseManager, RowGroupingModule, TreeDataModule } from 'ag-grid-enterprise'
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   CellStyleModule,
+  RowSelectionModule,
+  TextEditorModule,
   RowGroupingModule,
   TreeDataModule,
 ])
