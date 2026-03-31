@@ -2,7 +2,17 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [],
+  routes: [
+    {
+      path: '/',
+      redirect: '/tree-grid',
+    },
+    {
+      path: '/tree-grid',
+      name: 'tree-grid',
+      component: () => import('@/views/TreeGrid.vue'),
+    },
+  ],
 })
 
 export default router

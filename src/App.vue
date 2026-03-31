@@ -1,7 +1,5 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div>Hello</div>
+  <router-view />
 </template>
-
-<style scoped></style>

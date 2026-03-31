@@ -3,6 +3,7 @@ export type TreeStoreId = string | number
 export interface TreeStoreItem {
   id: TreeStoreId
   parent: TreeStoreId | null
+  label: string
   [key: string]: unknown
 }
 
@@ -20,6 +21,10 @@ export class TreeStore<T extends TreeStoreItem> {
 
   private allItemsCache: T[] | null = null
   private allItemsCacheIndexById: Map<TreeStoreId, number> | null = null
+
+  get allItems() {
+    return this.allItemsCache || []
+  }
 
   public constructor(items: readonly T[]) {
     for (const item of items) {
