@@ -185,7 +185,7 @@ function syncRowData(
 </script>
 
 <template>
-  <TreeGridPageShell>
+  <TreeGridPageShell active-mode="edit">
     <template #header>
       <header class="toolbar">
         <div class="toolbar__meta">

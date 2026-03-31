@@ -33,7 +33,7 @@ const autoGroupColumnDef = createTreeGridAutoGroupColumnDef(isGroupItem)
 </script>
 
 <template>
-  <TreeGridPageShell>
+  <TreeGridPageShell active-mode="view">
     <template #header>
       <header class="toolbar">
         <p class="toolbar__mode">Режим: просмотр</p>
